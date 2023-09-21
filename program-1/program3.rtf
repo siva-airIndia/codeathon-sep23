@@ -1,0 +1,41 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2709
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 import Foundation\
+\
+enum IPAddressType \{\
+    case IPv4\
+    case IPv6\
+    case invalid\
+\}\
+\
+func validateIPAddress(_ ipAddress: String) -> IPAddressType \{\
+    var sin = sockaddr_in()\
+    var sin6 = sockaddr_in6()\
+\
+    if ipAddress.withCString(\{ cstring in inet_pton(AF_INET, cstring, &(sin.sin_addr)) \}) == 1 \{\
+        return .IPv4\
+    \} else if ipAddress.withCString(\{ cstring in inet_pton(AF_INET6, cstring, &(sin6.sin6_addr)) \}) == 1 \{\
+        return .IPv6\
+    \} else \{\
+        return .invalid\
+    \}\
+\}\
+\
+// Example usage:\
+let ipAddress = "192.168.1.1"\
+let result = validateIPAddress(ipAddress)\
+\
+switch result \{\
+case .IPv4:\
+    print("\\(ipAddress) is a valid IPv4 address.")\
+case .IPv6:\
+    print("\\(ipAddress) is a valid IPv6 address.")\
+case .invalid:\
+    print("\\(ipAddress) is not a valid IP address.")\
+\}\
+}
